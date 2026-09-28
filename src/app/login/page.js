@@ -190,6 +190,22 @@ function LoginContent() {
     }
   }, [searchParams, activeRole]);
 
+  // Handle NextAuth redirect error parameters
+  const authErrorParam = searchParams.get('error');
+  useEffect(() => {
+    if (authErrorParam) {
+      if (authErrorParam === 'Configuration') {
+        setErrorMessage('Server configuration issue detected. Please verify NEXTAUTH_SECRET and DATABASE_URL in your environment settings.');
+      } else if (authErrorParam === 'AccessDenied') {
+        setErrorMessage('Access denied: You do not have permission to view this resource.');
+      } else if (authErrorParam === 'CredentialsSignin') {
+        setErrorMessage('Invalid credentials. Please verify your Registry ID and Password/PIN.');
+      } else {
+        setErrorMessage(`Authentication error: ${authErrorParam}`);
+      }
+    }
+  }, [authErrorParam]);
+
   const handleRoleChange = (role) => {
     setActiveRole(role);
     setIdValue(getRoleTemplate(role));

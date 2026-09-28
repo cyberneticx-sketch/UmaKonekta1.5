@@ -30,7 +30,7 @@ yarn-error.log*
 .vercel
 
 # prisma
-prisma/dev.db
+# prisma/dev.db (tracked for zero-setup prototype database)
 prisma/dev.db-journal
 
 # ide

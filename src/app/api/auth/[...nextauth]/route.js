@@ -4,6 +4,19 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { logSecurityEvent } from "@/lib/siem"
 
+// Auto-detect production URL for NextAuth when deployed on Netlify/Vercel
+if (!process.env.NEXTAUTH_URL) {
+  if (process.env.URL) {
+    process.env.NEXTAUTH_URL = process.env.URL;
+  } else if (process.env.DEPLOY_PRIME_URL) {
+    process.env.NEXTAUTH_URL = process.env.DEPLOY_PRIME_URL;
+  } else if (process.env.DEPLOY_URL) {
+    process.env.NEXTAUTH_URL = process.env.DEPLOY_URL;
+  }
+}
+
+const DEFAULT_AUTH_SECRET = 'umakonekta-secure-session-auth-key-production-ph-2026';
+
 const rateLimitMap = new Map();
 const ipRateLimitMap = new Map();
 const MAX_ATTEMPTS = 5;
@@ -294,7 +307,7 @@ export const authOptions = {
       }
     })
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || DEFAULT_AUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -318,6 +331,7 @@ export const authOptions = {
   },
   pages: {
     signIn: '/login',
+    error: '/login',
   }
 };
 
