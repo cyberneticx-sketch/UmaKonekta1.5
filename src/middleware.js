@@ -9,6 +9,8 @@ const rolePortalMap = {
   secops: "/x9f-telemetry-vault-8812",
 };
 
+const AUTH_SECRET = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || 'umakonekta-secure-session-auth-key-production-ph-2026';
+
 // Global Edge WAF and Authentication Guard
 export async function middleware(req) {
   const userAgent = req.headers.get('user-agent')?.toLowerCase() || '';
@@ -31,7 +33,7 @@ export async function middleware(req) {
   if (pathname.startsWith('/api/x9f-ops') && !(pathname === '/api/x9f-ops/track' && req.method === 'POST')) {
     const token = await getToken({ 
       req, 
-      secret: process.env.NEXTAUTH_SECRET 
+      secret: AUTH_SECRET 
     });
 
     if (!token || token.role !== 'secops') {
@@ -56,7 +58,7 @@ export async function middleware(req) {
   if (privateRoutes.some(route => pathname.startsWith(route))) {
     const token = await getToken({ 
       req, 
-      secret: process.env.NEXTAUTH_SECRET 
+      secret: AUTH_SECRET 
     });
 
     if (!token) {

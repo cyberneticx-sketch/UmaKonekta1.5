@@ -1,0 +1,10 @@
+[build]
+  command = "prisma generate && next build"
+  publish = ".next"
+
+[build.environment]
+  NEXTAUTH_SECRET = "umakonekta-secure-session-auth-key-production-ph-2026"
+  DATABASE_URL = "file:./prisma/dev.db"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
